@@ -4,3 +4,4 @@ env/
 *.pyc
 *.pyo
 *.pyd
+credentials.py
