@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'nav.ui'
+# Form implementation generated from reading ui file 'nav_new.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.6
 #
@@ -9,6 +9,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QColorDialog, QFontDialog
 
 
 class Ui_MainWindow(object):
@@ -46,24 +47,15 @@ class Ui_MainWindow(object):
         self.comboBox.addItem("")
         self.comboBox.addItem("")
         self.comboBox.addItem("")
-        self.fontComboBox = QtWidgets.QFontComboBox(self.centralwidget)
-        self.fontComboBox.setGeometry(QtCore.QRect(140, 0, 121, 21))
-        font = QtGui.QFont()
-        font.setFamily("Latin Modern Roman")
-        font.setBold(False)
-        font.setItalic(True)
-        font.setWeight(50)
-        self.fontComboBox.setFont(font)
-        self.fontComboBox.setObjectName("fontComboBox")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(260, 0, 31, 21))
+        self.pushButton.setGeometry(QtCore.QRect(230, 0, 31, 21))
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
         self.pushButton.setFont(font)
         self.pushButton.setObjectName("pushButton")
         self.pushButton_2 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_2.setGeometry(QtCore.QRect(290, 0, 31, 21))
+        self.pushButton_2.setGeometry(QtCore.QRect(260, 0, 31, 21))
         font = QtGui.QFont()
         font.setBold(False)
         font.setItalic(True)
@@ -71,13 +63,36 @@ class Ui_MainWindow(object):
         self.pushButton_2.setFont(font)
         self.pushButton_2.setObjectName("pushButton_2")
         self.pushButton_3 = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton_3.setGeometry(QtCore.QRect(320, 0, 31, 21))
+        self.pushButton_3.setGeometry(QtCore.QRect(290, 0, 31, 21))
         font = QtGui.QFont()
         font.setBold(False)
         font.setItalic(False)
         font.setWeight(50)
         self.pushButton_3.setFont(font)
         self.pushButton_3.setObjectName("pushButton_3")
+        self.pushButton_6 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_6.setGeometry(QtCore.QRect(0, 20, 141, 25))
+        self.pushButton_6.setObjectName("pushButton_6")
+        self.label = QtWidgets.QLabel(self.centralwidget)
+        self.label.setGeometry(QtCore.QRect(980, 0, 81, 20))
+        self.label.setObjectName("label")
+        self.verticalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.verticalLayoutWidget.setGeometry(QtCore.QRect(70, 79, 891, 261))
+        self.verticalLayoutWidget.setObjectName("verticalLayoutWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.verticalLayoutWidget)
+        self.verticalLayout.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.textEdit = QtWidgets.QTextEdit(self.verticalLayoutWidget)
+        self.textEdit.setObjectName("textEdit")
+        self.verticalLayout.addWidget(self.textEdit)
+        self.pushButton_7 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_7.setGeometry(QtCore.QRect(320, 0, 89, 21))
+        self.pushButton_7.setObjectName("pushButton_7")
+        self.pushButton_7.clicked.connect(self.colorDialog)
+        self.pushButton_8 = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton_8.setGeometry(QtCore.QRect(140, 0, 89, 21))
+        self.pushButton_8.setObjectName("pushButton_8")
+        self.pushButton_8.clicked.connect(self.fontDialog)
         MainWindow.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(MainWindow)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1061, 22))
@@ -121,15 +136,17 @@ class Ui_MainWindow(object):
         self.actionsave = QtWidgets.QAction(MainWindow)
         self.actionsave.setStatusTip("")
         self.actionsave.setObjectName("actionsave")
+        self.actionConvert_to_pdf = QtWidgets.QAction(MainWindow)
+        self.actionConvert_to_pdf.setObjectName("actionConvert_to_pdf")
         self.menuFile.addAction(self.actionNew)
         self.menuFile.addAction(self.actionOpen)
         self.menuFile.addAction(self.actionsave)
+        self.menuFile.addAction(self.actionConvert_to_pdf)
         self.menuEdit.addAction(self.actionUndo)
         self.menuEdit.addAction(self.actionRedo)
         self.menuEdit.addAction(self.actionPaste)
         self.menuInsert.addAction(self.actionImage)
         self.menuInsert.addAction(self.actionTable)
-        self.menuInsert.addAction(self.actionChart)
         self.menubar.addAction(self.menuFile.menuAction())
         self.menubar.addAction(self.menuEdit.menuAction())
         self.menubar.addAction(self.menuInsert.menuAction())
@@ -140,6 +157,16 @@ class Ui_MainWindow(object):
 
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+    def colorDialog(self):
+        color=QColorDialog.getColor()
+        self.textEdit.setTextColor(color)
+
+    def fontDialog(self):
+        font,ok =QFontDialog.getFont()
+
+        if ok:
+            self.textEdit.setFont(font)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -166,10 +193,13 @@ class Ui_MainWindow(object):
         self.comboBox.setItemText(17, _translate("MainWindow", "28"))
         self.comboBox.setItemText(18, _translate("MainWindow", "29"))
         self.comboBox.setItemText(19, _translate("MainWindow", "30"))
-        self.fontComboBox.setCurrentText(_translate("MainWindow", "abc"))
         self.pushButton.setText(_translate("MainWindow", "B"))
         self.pushButton_2.setText(_translate("MainWindow", "I"))
         self.pushButton_3.setText(_translate("MainWindow", "U"))
+        self.pushButton_6.setText(_translate("MainWindow", " Untitled Doc"))
+        self.label.setText(_translate("MainWindow", "Hello, XYZ"))
+        self.pushButton_7.setText(_translate("MainWindow", "Colour"))
+        self.pushButton_8.setText(_translate("MainWindow", "Font"))
         self.menuFile.setTitle(_translate("MainWindow", "File"))
         self.menuEdit.setTitle(_translate("MainWindow", "Edit"))
         self.menuInsert.setTitle(_translate("MainWindow", "Insert"))
@@ -189,10 +219,11 @@ class Ui_MainWindow(object):
         self.actionPaste.setText(_translate("MainWindow", "Paste"))
         self.actionPaste.setShortcut(_translate("MainWindow", "Ctrl+V"))
         self.actionImage.setText(_translate("MainWindow", "Image"))
-        self.actionTable.setText(_translate("MainWindow", "Table"))
+        self.actionTable.setText(_translate("MainWindow", "Link"))
         self.actionChart.setText(_translate("MainWindow", "Chart"))
         self.actionsave.setText(_translate("MainWindow", "Save"))
         self.actionsave.setShortcut(_translate("MainWindow", "Ctrl+S"))
+        self.actionConvert_to_pdf.setText(_translate("MainWindow", "Convert to pdf"))
 
 
 if __name__ == "__main__":
