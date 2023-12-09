@@ -11,20 +11,88 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 
 
-class Ui_HomeScreen(object):
-    def setupUi(self, HomeScreen):
-        HomeScreen.setObjectName("HomeScreen")
-        HomeScreen.resize(400, 300)
-        self.verticalLayout = QtWidgets.QVBoxLayout(HomeScreen)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.welcome_label = QtWidgets.QLabel(HomeScreen)
-        self.welcome_label.setAlignment(QtCore.Qt.AlignCenter)
-        self.welcome_label.setObjectName("welcome_label")
-        self.verticalLayout.addWidget(self.welcome_label)
+class Ui_HomeWindow(object):
+    def setupUi(self, HomeWindow):
+        HomeWindow.setObjectName("HomeWindow")
+        HomeWindow.resize(1147, 885)
+        HomeWindow.setStyleSheet("HomeWindow {\n"
+"    background-color: rgb(255, 248, 210);\n"
+"    background:rgb(255, 252, 219)\n"
+"} ")
+        self.centralwidget = QtWidgets.QWidget(HomeWindow)
+        self.centralwidget.setObjectName("centralwidget")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(30, 10, 111, 121))
+        font = QtGui.QFont()
+        font.setPointSize(16)
+        font.setItalic(True)
+        self.label_2.setFont(font)
+        self.label_2.setText("")
+        self.label_2.setPixmap(QtGui.QPixmap("/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/../../../Downloads/docify-high-resolution-logo-black-transparent.png"))
+        self.label_2.setScaledContents(True)
+        self.label_2.setObjectName("label_2")
+        self.label_4 = QtWidgets.QLabel(self.centralwidget)
+        self.label_4.setGeometry(QtCore.QRect(1060, 10, 67, 17))
+        self.label_4.setStyleSheet("QLabel {\n"
+"\n"
+"color: rgb(255, 0, 0)\n"
+"}")
+        self.label_4.setObjectName("label_4")
+        self.pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButton.setGeometry(QtCore.QRect(20, 200, 151, 221))
+        font = QtGui.QFont()
+        font.setPointSize(67)
+        self.pushButton.setFont(font)
+        self.pushButton.setStyleSheet("QPushButton {\n"
+"    background-color: rgb(142, 255, 151);\n"
+"    color: rgb(0, 141, 0);\n"
+"}\n"
+"")
+        self.pushButton.setObjectName("pushButton")
+        self.label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.label_3.setGeometry(QtCore.QRect(20, 170, 201, 17))
+        font = QtGui.QFont()
+        font.setFamily("Lato")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_3.setFont(font)
+        self.label_3.setObjectName("label_3")
+        self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.lineEdit.setGeometry(QtCore.QRect(220, 10, 711, 25))
+        self.lineEdit.setObjectName("lineEdit")
+        self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 480, 1061, 351))
+        self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
+        self.horizontalLayoutDocs = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
+        self.horizontalLayoutDocs.setContentsMargins(0, 0, 0, 0)
+        self.horizontalLayoutDocs.setObjectName("horizontalLayoutDocs")
+        self.label_6 = QtWidgets.QLabel(self.centralwidget)
+        self.label_6.setGeometry(QtCore.QRect(20, 450, 201, 17))
+        font = QtGui.QFont()
+        font.setFamily("Lato")
+        font.setPointSize(14)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_6.setFont(font)
+        self.label_6.setObjectName("label_6")
+        HomeWindow.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(HomeWindow)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1147, 22))
+        self.menubar.setObjectName("menubar")
+        HomeWindow.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(HomeWindow)
+        self.statusbar.setObjectName("statusbar")
+        HomeWindow.setStatusBar(self.statusbar)
 
-        self.retranslateUi(HomeScreen)
-        QtCore.QMetaObject.connectSlotsByName(HomeScreen)
+        self.retranslateUi(HomeWindow)
+        QtCore.QMetaObject.connectSlotsByName(HomeWindow)
 
-    def retranslateUi(self, HomeScreen):
+    def retranslateUi(self, HomeWindow):
         _translate = QtCore.QCoreApplication.translate
-        HomeScreen.setWindowTitle(_translate("HomeScreen", "HomeScreen"))
+        HomeWindow.setWindowTitle(_translate("HomeWindow", "HomeWindow"))
+        self.label_4.setText(_translate("HomeWindow", "Hello XYZ"))
+        self.pushButton.setText(_translate("HomeWindow", "+"))
+        self.label_3.setText(_translate("HomeWindow", "Create new Document"))
+        self.lineEdit.setPlaceholderText(_translate("HomeWindow", "Search"))
+        self.label_6.setText(_translate("HomeWindow", "My Documents"))

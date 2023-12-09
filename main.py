@@ -1,20 +1,17 @@
 import bcrypt
-import time
+import uuid
 import socket
 import threading
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QApplication, QMainWindow, QStackedWidget, QMessageBox, QTextEdit, QVBoxLayout
+from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
-from supabase import create_client
 import webbrowser
-from credentials import SUPABASE_URL, SUPABASE_KEY
+from utils.supabase_client import supabase
 
-# Initialize Supabase client
-supabase = create_client(SUPABASE_URL, SUPABASE_KEY)
 docId = None
-docId2 = None
 userId = None
-realtime = None
+username = None
+
 class AuthenticationManager:
     @staticmethod
     def signinWithGoogle():
@@ -23,7 +20,6 @@ class AuthenticationManager:
                 "provider": 'google',
             })
             if response and response.url:
-                # AuthenticationManager.show_popup("Google Sign In", response.get("url"))
                 webbrowser.open(response.url) 
             print("Signup successful!")
             return response
@@ -54,17 +50,13 @@ class AuthenticationManager:
 
                 AuthenticationManager.show_popup("Signup Successful", "User registered successfully.")
                 
-                doc_id = supabase.table('users').select('docs').eq('uid', response.user.id).execute().data[0]['docs']
-                
                 # print("doc_id: ", doc_id.data[0]['docs'])
-                
-                supabase.table('docs').insert([{'doc_id': doc_id, 'users': [response.user.id]}]).execute()
-
-                
-                global docId
-                docId = doc_id
+                global userId
+                userId = response.user.id
+                global username
+                username = response.user.user_metadata.get('name').split(" ")[0]
                 # Redirect to the login page or perform any other action as needed
-                stacked_widget.setCurrentIndex(0)
+                # stacked_widget.setCurrentIndex(0)
 
             print("Signup successful!")
             # print(response.user.id)
@@ -90,41 +82,30 @@ class AuthenticationManager:
             })
 
             print("Login successful!")
+            AuthenticationManager.show_popup("Login Successful", "User logged in.")
             global userId
             userId = response.user.id
+            # global docId
+            # docId = supabase.table('users').select('docs').eq('uid', response.user.id).execute().data[0]['docs']
+            global username
+            username = response.user.user_metadata.get('name').split(" ")[0]
+                
             return response
-
         except Exception as e:
             print(f"An error occurred during login: {e}")
+
 
 class MyTextEdit(QTextEdit):
     def __init__(self, server_socket):
         super().__init__()
 
         self.server_socket = server_socket
-
         self.textChanged.connect(self.send_data)
-
+       
     def send_data(self):
         text = self.toPlainText()
-        if (docId == None) : 
-            # Use Supabase query to get the doc_id where the users array contains the logged-in user ID
-            doc_id_query = supabase.table('docs').select('doc_id').contains('users', [userId]).execute()
-
-            # Assuming the result is a list of rows, get the doc_id from the first row (if available)
-            if doc_id_query and doc_id_query.data:
-                doc_id = doc_id_query.data[0]['doc_id']
-                global docId2
-                docId2 = doc_id
-                # print(f"Doc ID for the logged-in user: {doc_id}")
-                supabase.table('docs').update({'content': text}).eq('doc_id', doc_id).execute()
-                self.server_socket.sendall(text.encode())
-                
-            else:
-                print("No matching document found for the logged-in user.")
-        else :
-            supabase.table('docs').update({'content': text}).eq('doc_id', docId).execute()
-            self.server_socket.sendall(text.encode())
+        supabase.table('docs').update({'content': text}).eq('doc_id', docId).execute()
+        self.server_socket.sendall(text.encode())
         
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -136,11 +117,13 @@ class MainWindow(QMainWindow):
         # Load the login and signup pages from their respective UI files
         self.login_page = loadUi('ui/login.ui')
         self.signup_page = loadUi('ui/signup.ui')
-        self.navbar = loadUi('ui/nav_new.ui')
+        self.home_page = loadUi('ui/home.ui')
+        self.navbar = loadUi('ui/navbar.ui')
 
         # Add the pages to the stacked widget
         self.stacked_widget.addWidget(self.login_page)
         self.stacked_widget.addWidget(self.signup_page)
+        self.stacked_widget.addWidget(self.home_page)
         self.stacked_widget.addWidget(self.navbar)
 
         # Set the central widget as the stacked widget
@@ -152,11 +135,15 @@ class MainWindow(QMainWindow):
         # Connect the signal for switching to the signup page
         self.login_page.signUpLabel.mousePressEvent = self.switch_to_signup
         self.signup_page.logInLabel.mousePressEvent = self.switch_to_login
+        # self.home_page.pushButton.mousePressEvent = self.switch_to_navbar
+        # self.home_page.pushButton.clicked.connect(lambda: self.switch_to_navbar(response))
+
 
         # Connect the signup function to the signup button
         self.signup_page.pushButtonEmail.clicked.connect(self.signup)
         self.login_page.pushButtonEmail.clicked.connect(self.login)
         self.login_page.pushButtonGoogle.clicked.connect(self.signinGoogle)
+        self.home_page.pushButton.clicked.connect(self.create_doc)
         
          # Establish a socket connection to the server
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -180,7 +167,7 @@ class MainWindow(QMainWindow):
     def fetch_and_update_content(self):
         try:
             # Fetch the latest content based on the doc_id
-            doc_id_query = supabase.table('docs').select('content').eq('doc_id', docId2).execute()
+            doc_id_query = supabase.table('docs').select('content').eq('doc_id', docId).execute()
             if doc_id_query and doc_id_query.data:
                 latest_content = doc_id_query.data[0]['content']
                 
@@ -201,13 +188,14 @@ class MainWindow(QMainWindow):
 
     def update_text_edit(self):
         try:
-            # Fetch user data from Supabase 'users' table
-            response = supabase.table('users').select("*").execute()
-            
-            self.navbar.textEdit.setPlainText(f"response: {response}")
+            # Fetch initial content from Supabase 'docs' table
+            initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
+            print("\nInitial data: \n", initial_data)
+            self.text_edit.setPlainText(initial_data)
+            self.start_sync_timer()
 
         except Exception as e:
-            print(f"An error occurred during update_text_edit: {e}")
+            print(f"An error occurred during initial_update_text_edit: {e}")
     @staticmethod
     def hash_password(password):
     # Generate a random salt using the secrets module
@@ -217,12 +205,101 @@ class MainWindow(QMainWindow):
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
 
         return hashed_password
-    def switch_to_navbar(self, response):
+    def switch_to_home(self):
+        # Switch to the navbar page when the button on the home page is clicked
+        
+        self.stacked_widget.setCurrentIndex(2)
+        self.home_page.label_4.setText(f"Hi {username}!")
+        self.update_ui()
+    def generate_doc_id():
+        doc_id = str(uuid.uuid4())
+        return doc_id
+    def create_doc(self):
+        new_doc_id = MainWindow.generate_doc_id()
+        doc_name, ok = QInputDialog.getText(self, 'New Document', 'Enter document name:')
+        if ok and doc_name:
+            uuids = supabase.table('users').select('docs').eq('uid', userId).execute().data[0]['docs']
+            print(f'existing_uuids: {uuids}')
+            if uuids is not None:
+                uuids.append(new_doc_id)
+            else :
+                uuids = [new_doc_id]
+            print(f'uuids: {uuids}')
+            supabase.table('users').update({'docs': uuids}).eq('uid', userId).execute().data[0]['docs']
+            global docId
+            docId = new_doc_id
+            supabase.table('docs').insert([{'doc_id': new_doc_id, 'name': doc_name, 'users': [userId]}]).execute()
+            self.switch_to_navbar(doc_name)
+    def fetch_docs(self):
+        try:
+            # Fetch document names from the Supabase 'docs' table
+            docs_data = supabase.table('docs').select('name').contains('users', [userId]).execute().data
+
+            return [doc['name'] for doc in docs_data] if docs_data else []
+
+        except Exception as e:
+            print(f"An error occurred during fetch_docs: {e}")
+            return []
+
+    def update_ui(self):
+        # Clear existing widgets from the layout
+        for i in reversed(range(self.home_page.horizontalLayoutDocs.count())):
+            self.home_page.horizontalLayoutDocs.itemAt(i).widget().setParent(None)
+
+        # Fetch document names
+        doc_names = self.fetch_docs()
+        print("Fetching document names: ", doc_names)
+
+        # Create and add widgets to the layout
+        for doc_name in doc_names:
+            doc_widget = self.create_doc_widget(doc_name)
+            self.home_page.horizontalLayoutDocs.addWidget(doc_widget)
+
+    # def create_doc_widget(self, doc_name):
+    #     # Create a widget for each document
+    #     doc_widget = QWidget()
+    #     doc_layout = QVBoxLayout()
+
+    #     # Create a label for the document name
+    #     doc_label = QLabel(doc_name)
+    #     doc_label.setStyleSheet("font-size: 14px; font-weight: bold;")
+
+    #     # Add the label to the layout
+    #     doc_layout.addWidget(doc_label)
+
+    #     # Set the layout for the widget
+    #     doc_widget.setLayout(doc_layout)
+
+    #     return doc_widget        
+    def create_doc_widget(self, doc_name):
+    # Create a frame to encapsulate each document's information
+        doc_frame = QFrame()
+        doc_frame.setFrameShape(QFrame.Box)  # Set the frame shape
+        doc_frame.setLineWidth(1)  # Set the frame line width
+
+        # Create a button for the document
+        doc_button = QPushButton(doc_name)
+        doc_button.clicked.connect(lambda _, name=doc_name: self.open_doc(name))
+
+        # Set up a vertical layout for the frame and add the button
+        frame_layout = QVBoxLayout()
+        frame_layout.addWidget(doc_button)
+        doc_frame.setLayout(frame_layout)
+
+        return doc_frame
+    def open_doc(self, doc_name) :
+        global docId
+        docId = supabase.table('docs').select('doc_id').eq('name', doc_name).execute().data[0]['doc_id']
+        self.switch_to_navbar(doc_name)
+        
+    def switch_to_navbar(self, doc_name):
 
         # Switch to the home page
-        self.stacked_widget.setCurrentIndex(2)
-        user_name = response.user.user_metadata.get('name').split(" ")[0]
-        self.navbar.label.setText(f"Hi {user_name}!")
+        self.stacked_widget.setCurrentIndex(3)
+        self.navbar.pushButton_6.setText(f"{doc_name}")
+        self.navbar.label.setText(f"Hi {username}!")
+        
+        self.update_text_edit()
 
         # Connect the textChanged signal to the send_data method
         if not hasattr(self.text_edit, 'connected'):
@@ -231,47 +308,22 @@ class MainWindow(QMainWindow):
             # Mark the connection as established
             self.text_edit.connected = True
         
-        # self.update_text_edit()
         
     def listen_for_changes(self):
         try:
-            # global realtime
-            # realtime = supabase.realtime()
-
-            # Subscribe to changes in the 'docs' table for the specific 'doc_id'
-            # print("\nThe realtime is: " + realtime) 
-            # print("\nThe doc id is: " + docId2)
-            # realtime.on('docs:doc_id=eq.' + docId2, self.handle_realtime_update)
-
-            # while True:
-            #     # Keep the event loop running
-            #     QApplication.processEvents()
-            #     time.sleep(0.1)
             while True:
                 # Receive data from the server
                 data = self.server_socket.recv(1024)
                 if not data:
                     break
 
-                # # Update the textEdit in the navbar with the received data
+            # Update the textEdit in the navbar with the received data
             received_text = data.decode('utf-8')
-            self.text_edit.setPlainText(received_text)
-                # # supabase.table('users').update({
-                # # supabase.table('docs').insert([{'doc_id': doc_id}, {'users': [response.user.id]}]).execute()
-                # supabase.table('docs').update({'content': received_text}).eq('doc_id', docId).execute()                
+            self.text_edit.setPlainText(received_text)               
 
         except Exception as e:
             print(f"An error occurred during listen_for_changes: {e}")
-    
-    # def handle_realtime_update(self, payload):
-    #     try:
-    #         # Update the textEdit in the navbar with the received data
-    #         received_text = payload['new']['content']
-    #         self.text_edit.setPlainText(received_text)
-
-    #     except Exception as e:
-    #         print(f"An error occurred during handle_realtime_update: {e}")
-                
+            
     def switch_to_signup(self, event):
         if event.button() == Qt.LeftButton:
             # Switch to the signup page
@@ -290,7 +342,7 @@ class MainWindow(QMainWindow):
         response = self.auth_manager.signup(email, password, full_name, self.stacked_widget)
 
         if response:
-            self.switch_to_navbar(response)
+            self.switch_to_home()
 
     def login(self):
         email = self.login_page.lineEditEmail.text()
@@ -299,7 +351,7 @@ class MainWindow(QMainWindow):
         response = self.auth_manager.login(email, password)
 
         if response:
-            self.switch_to_navbar(response)
+            self.switch_to_home()
             
     def signinGoogle(self):
         # email = self.login_page.lineEditEmail.text()
@@ -309,19 +361,13 @@ class MainWindow(QMainWindow):
 
         if response:
             print(response)
-            self.switch_to_navbar(response)
+            self.switch_to_home()
 
 
 if __name__ == "__main__":
     app = QApplication([])
     main_window = MainWindow()
-    
-     # Start a thread to continuously listen for changes in the textEdit
-    # print("Starting thread to listen for changes in the textEdit.....")
-    # threading.Thread(target=main_window.listen_for_changes).start()
-    main_window.start_sync_timer()
-    
     main_window.show()
     app.exec_()
-
-# MainWindow.listen_for_changes()
+    
+# main_window.update_ui()

@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file '/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/nav_new.ui'
+# Form implementation generated from reading ui file '/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/navbar.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.9
 #
