@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1061</width>
+    <height>406</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <property name="objectName">
+    <string>centralwidget</string>
+   </property>
+   <widget class="QPushButton" name="pushButton_4">
+    <property name="geometry">
+     <rect>
+      <x>50</x>
+      <y>0</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>pushButton_4</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_5">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>51</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>pushButton_5</string>
+    </property>
+   </widget>
+   <widget class="QComboBox" name="comboBox">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>0</y>
+      <width>41</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>comboBox</string>
+    </property>
+    <item>
+     <property name="text">
+      <string>11</string>
+     </property>
+    </item>
+    <item>
+     <property name="text">
+      <string>12</string>
+     </property>
+    </item>
+    <!-- Add other items as needed -->
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>0</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <bold>true</bold>
+      <weight>75</weight>
+     </font>
+    </property>
+    <property name="objectName">
+     <string>pushButton</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_2">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>0</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <italic>true</italic>
+     </font>
+    </property>
+    <property name="objectName">
+     <string>pushButton_2</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_3">
+    <property name="geometry">
+     <rect>
+      <x>290</x>
+      <y>0</y>
+      <width>31</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>pushButton_3</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_6">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>20</y>
+      <width>141</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>pushButton_6</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>980</x>
+      <y>0</y>
+      <width>81</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>label</string>
+    </property>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>70</x>
+      <y>79</y>
+      <width>891</width>
+      <height>261</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>verticalLayoutWidget</string>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
+     <item>
+      <widget class="QTextEdit" name="textEdit"/>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QPushButton" name="pushButton_7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>0</y>
+      <width>89</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>pushButton_7</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton_8">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>0</y>
+      <width>89</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="objectName">
+     <string>pushButton_8</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1061</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="objectName">
+    <string>menubar</string>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuEdit">
+    <property name="title">
+     <string>Edit</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuInsert">
+    <property name="title">
+     <string>Insert</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuFormat">
+    <property name="title">
+        <string>Format</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>Tools</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuExtensions">
+    <property name="title">
+     <string>Extensions</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionInsert">
+   <property name="objectName">
+    <string>actionInsert</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="objectName">
+    <string>actionNew</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="objectName">
+    <string>actionOpen</string>
+   </property>
+  </action>
+  <action name="actionUndo">
+   <property name="objectName">
+    <string>actionUndo</string>
+   </property>
+  </action>
+  <action name="actionRedo">
+   <property name="objectName">
+    <string>actionRedo</string>
+   </property>
+  </action>
+  <action name="actionPaste">
+   <property name="objectName">
+    <string>actionPaste</string>
+   </property>
+  </action>
+  <action name="actionImage">
+   <property name="objectName">
+    <string>actionImage</string>
+   </property>
+  </action>
+  <action name="actionTable">
+   <property name="objectName">
+    <string>actionTable</string>
+   </property>
+  </action>
+  <action name="actionChart">
+   <property name="objectName">
+    <string>actionChart</string>
+   </property>
+  </action>
+  <action name="actionsave">
+   <property name="objectName">
+    <string>actionsave</string>
+   </property>
+  </action>
+  <action name="actionConvert_to_pdf">
+   <property name="objectName">
+    <string>actionConvert_to_pdf</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
+
