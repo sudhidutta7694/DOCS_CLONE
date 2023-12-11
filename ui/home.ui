@@ -23,10 +23,10 @@
    <widget class="QLabel" name="label_2">
     <property name="geometry">
      <rect>
-      <x>30</x>
+      <x>20</x>
       <y>10</y>
-      <width>111</width>
-      <height>121</height>
+      <width>101</width>
+      <height>61</height>
      </rect>
     </property>
     <property name="font">
@@ -39,7 +39,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap>../../../Downloads/docify-high-resolution-logo-black-transparent.png</pixmap>
+     <pixmap>../resources/images/docify-high-resolution-logo-black-transparent.png</pixmap>
     </property>
     <property name="scaledContents">
      <bool>true</bool>
@@ -48,8 +48,8 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>1060</x>
-      <y>10</y>
+      <x>890</x>
+      <y>60</y>
       <width>67</width>
       <height>17</height>
      </rect>
@@ -67,10 +67,10 @@ color: rgb(255, 0, 0)
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>160</x>
       <y>200</y>
       <width>151</width>
-      <height>221</height>
+      <height>211</height>
      </rect>
     </property>
     <property name="font">
@@ -80,6 +80,7 @@ color: rgb(255, 0, 0)
     </property>
     <property name="styleSheet">
      <string notr="true">QPushButton {
+border-radius: 15px;
 	background-color: rgb(142, 255, 151);
 	color: rgb(0, 141, 0);
 }
@@ -93,7 +94,7 @@ color: rgb(255, 0, 0)
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>170</y>
+      <y>150</y>
       <width>201</width>
       <height>17</height>
      </rect>
@@ -113,22 +114,30 @@ color: rgb(255, 0, 0)
    <widget class="QLineEdit" name="lineEdit">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>10</y>
+      <x>150</x>
+      <y>20</y>
       <width>711</width>
-      <height>25</height>
+      <height>41</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit {
+border-radius: 20px;
+border: 1px solid black; 
+padding:10px;
+background-color: rgb(187, 210, 231);
+}</string>
+    </property>
     <property name="placeholderText">
-     <string>Search</string>
+     <string>Search Docs</string>
     </property>
    </widget>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>480</y>
-      <width>1061</width>
+      <y>470</y>
+      <width>920</width>
       <height>351</height>
      </rect>
     </property>
@@ -138,7 +147,7 @@ color: rgb(255, 0, 0)
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>450</y>
+      <y>440</y>
       <width>201</width>
       <height>17</height>
      </rect>
@@ -155,6 +164,174 @@ color: rgb(255, 0, 0)
      <string>My Documents</string>
     </property>
    </widget>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>10</y>
+      <width>54</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="pixmap">
+     <pixmap>../resources/images/user.png</pixmap>
+    </property>
+    <property name="scaledContents">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>190</y>
+      <width>430</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QFrame {
+	border-radius: 15px;
+	background-color: rgb(189, 212, 238);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>520</x>
+      <y>150</y>
+      <width>240</width>
+      <height>17</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <family>Lato</family>
+      <pointsize>14</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="text">
+     <string>Open Documents with Link</string>
+    </property>
+   </widget>
+   <widget class="QFrame" name="frame_2">
+    <property name="geometry">
+     <rect>
+      <x>510</x>
+      <y>190</y>
+      <width>430</width>
+      <height>231</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QFrame {
+	border-radius: 15px;
+	background-color: rgb(189, 212, 238);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+    <widget class="QLineEdit" name="lineEditAccess">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>390</width>
+       <height>70</height>
+      </rect>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QLineEdit {
+border-radius: 20px;
+border: 1px solid black; 
+padding:10px;
+background-color: white;
+}</string>
+     </property>
+     <property name="placeholderText">
+      <string>Enter the access link</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtonAccess">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>130</y>
+       <width>130</width>
+       <height>50</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <family>Lato</family>
+       <pointsize>12</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+border-radius: 15px;
+	background-color: rgb(142, 255, 151);
+	color: rgb(0, 141, 0);
+}
+</string>
+     </property>
+     <property name="text">
+      <string>Open Doc</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QFrame" name="frame_3">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>470</y>
+      <width>920</width>
+      <height>350</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QFrame {
+	border-radius: 15px;
+	background-color: rgb(189, 212, 238);
+}</string>
+    </property>
+    <property name="frameShape">
+     <enum>QFrame::StyledPanel</enum>
+    </property>
+    <property name="frameShadow">
+     <enum>QFrame::Raised</enum>
+    </property>
+   </widget>
+   <zorder>frame_3</zorder>
+   <zorder>frame</zorder>
+   <zorder>label_2</zorder>
+   <zorder>label_4</zorder>
+   <zorder>pushButton</zorder>
+   <zorder>label_3</zorder>
+   <zorder>lineEdit</zorder>
+   <zorder>horizontalLayoutWidget</zorder>
+   <zorder>label_6</zorder>
+   <zorder>label</zorder>
+   <zorder>label_7</zorder>
+   <zorder>frame_2</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -165,8 +342,24 @@ color: rgb(255, 0, 0)
      <height>22</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuProfile">
+    <property name="title">
+     <string>Profile</string>
+    </property>
+    <addaction name="actionLogout"/>
+   </widget>
+   <addaction name="menuProfile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionLogout">
+   <property name="icon">
+    <iconset>
+     <normaloff>../resources/images/logout.png</normaloff>../resources/images/logout.png</iconset>
+   </property>
+   <property name="text">
+    <string>Logout</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

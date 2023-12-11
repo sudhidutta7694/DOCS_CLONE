@@ -6,18 +6,18 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1061</width>
-    <height>406</height>
+    <width>1143</width>
+    <height>892</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButton_4">
+   <widget class="QPushButton" name="pushButtonRedo">
     <property name="geometry">
      <rect>
-      <x>50</x>
+      <x>350</x>
       <y>0</y>
       <width>51</width>
       <height>21</height>
@@ -27,10 +27,10 @@
      <string>Redo</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_5">
+   <widget class="QPushButton" name="pushButtonUndo">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>300</x>
       <y>0</y>
       <width>51</width>
       <height>21</height>
@@ -40,120 +40,10 @@
      <string>Undo</string>
     </property>
    </widget>
-   <widget class="QComboBox" name="comboBox">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>0</y>
-      <width>41</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <item>
-     <property name="text">
-      <string>11</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>12</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>13</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>14</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>15</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>16</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>17</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>18</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>19</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>20</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>21</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>22</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>23</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>24</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>25</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>26</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>27</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>28</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>29</string>
-     </property>
-    </item>
-    <item>
-     <property name="text">
-      <string>30</string>
-     </property>
-    </item>
-   </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>230</x>
+      <x>490</x>
       <y>0</y>
       <width>31</width>
       <height>21</height>
@@ -172,7 +62,7 @@
    <widget class="QPushButton" name="pushButton_2">
     <property name="geometry">
      <rect>
-      <x>260</x>
+      <x>520</x>
       <y>0</y>
       <width>31</width>
       <height>21</height>
@@ -192,7 +82,7 @@
    <widget class="QPushButton" name="pushButton_3">
     <property name="geometry">
      <rect>
-      <x>290</x>
+      <x>550</x>
       <y>0</y>
       <width>31</width>
       <height>21</height>
@@ -212,9 +102,9 @@
    <widget class="QPushButton" name="pushButton_6">
     <property name="geometry">
      <rect>
-      <x>0</x>
-      <y>20</y>
-      <width>141</width>
+      <x>30</x>
+      <y>0</y>
+      <width>201</width>
       <height>25</height>
      </rect>
     </property>
@@ -225,23 +115,33 @@
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>980</x>
-      <y>0</y>
-      <width>81</width>
+      <x>0</x>
+      <y>30</y>
+      <width>111</width>
       <height>20</height>
      </rect>
     </property>
+    <property name="font">
+     <font>
+      <family>Lato</family>
+      <pointsize>11</pointsize>
+      <italic>true</italic>
+     </font>
+    </property>
     <property name="text">
-     <string>Hello, XYZ</string>
+     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:normal; color:#1803ff;&quot;&gt;Hello, XYZ&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+    </property>
+    <property name="indent">
+     <number>1</number>
     </property>
    </widget>
    <widget class="QWidget" name="verticalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>70</x>
-      <y>79</y>
-      <width>891</width>
-      <height>261</height>
+      <x>0</x>
+      <y>49</y>
+      <width>1131</width>
+      <height>791</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -250,23 +150,29 @@
      </item>
     </layout>
    </widget>
-   <widget class="QPushButton" name="pushButton_7">
+   <widget class="QPushButton" name="pushButtonColour">
     <property name="geometry">
      <rect>
-      <x>320</x>
+      <x>580</x>
       <y>0</y>
       <width>89</width>
       <height>21</height>
      </rect>
     </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	background-color: qradialgradient(spread:pad, cx:0.5, cy:0.5, radius:0.5, fx:0.5, fy:0.5, stop:0 rgba(255, 235, 235, 206), stop:0.35 rgba(255, 188, 188, 80), stop:0.4 rgba(255, 162, 162, 80), stop:0.425 rgba(255, 132, 132, 156), stop:0.44 rgba(252, 128, 128, 80), stop:1 rgba(255, 255, 255, 0));
+	color: rgb(0, 0, 0);
+}</string>
+    </property>
     <property name="text">
      <string>Colour</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton_8">
+   <widget class="QPushButton" name="pushButtonFont">
     <property name="geometry">
      <rect>
-      <x>140</x>
+      <x>400</x>
       <y>0</y>
       <width>89</width>
       <height>21</height>
@@ -276,13 +182,59 @@
      <string>Font</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonBack">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>31</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../resources/images/back.png</normaloff>../resources/images/back.png</iconset>
+    </property>
+    <property name="iconSize">
+     <size>
+      <width>20</width>
+      <height>20</height>
+     </size>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonShare">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>0</y>
+      <width>80</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	color: rgb(0, 85, 255);
+	background-color: rgb(170, 255, 127);
+}</string>
+    </property>
+    <property name="text">
+     <string>Share</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../resources/images/share.png</normaloff>../resources/images/share.png</iconset>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1061</width>
+     <width>1143</width>
      <height>22</height>
     </rect>
    </property>
@@ -290,10 +242,10 @@
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionNew"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionsave"/>
-    <addaction name="actionConvert_to_pdf"/>
+    <addaction name="actionRename"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionConvert_to_PDF"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
     <property name="title">
@@ -330,6 +282,16 @@
      <string>Help</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuAccess">
+    <property name="title">
+     <string>Access</string>
+    </property>
+    <addaction name="actionRestricted"/>
+    <addaction name="separator"/>
+    <addaction name="separator"/>
+    <addaction name="actionReadable"/>
+    <addaction name="actionWritable_3"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEdit"/>
    <addaction name="menuInsert"/>
@@ -337,6 +299,7 @@
    <addaction name="menuTools"/>
    <addaction name="menuExtensions"/>
    <addaction name="menuHelp"/>
+   <addaction name="menuAccess"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionInsert">
@@ -413,6 +376,75 @@
   <action name="actionConvert_to_pdf">
    <property name="text">
     <string>Convert to pdf</string>
+   </property>
+  </action>
+  <action name="actionRestricted">
+   <property name="icon">
+    <iconset>
+     <normaloff>../resources/images/lock.png</normaloff>../resources/images/lock.png</iconset>
+   </property>
+   <property name="text">
+    <string>Restricted</string>
+   </property>
+   <property name="font">
+    <font>
+     <weight>75</weight>
+     <bold>true</bold>
+     <underline>false</underline>
+    </font>
+   </property>
+  </action>
+  <action name="actionReadable">
+   <property name="icon">
+    <iconset>
+     <normaloff>../resources/images/read.png</normaloff>../resources/images/read.png</iconset>
+   </property>
+   <property name="text">
+    <string>Readable</string>
+   </property>
+  </action>
+  <action name="actionWritable_2">
+   <property name="text">
+    <string>Writable</string>
+   </property>
+  </action>
+  <action name="actionWritable">
+   <property name="text">
+    <string>Writable</string>
+   </property>
+  </action>
+  <action name="actionWritable_3">
+   <property name="icon">
+    <iconset>
+     <normaloff>../resources/images/write.png</normaloff>../resources/images/write.png</iconset>
+   </property>
+   <property name="text">
+    <string>Writable</string>
+   </property>
+  </action>
+  <action name="actionRename">
+   <property name="text">
+    <string>Rename</string>
+   </property>
+   <property name="statusTip">
+    <string>Rename a File</string>
+   </property>
+   <property name="whatsThis">
+    <string/>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+R</string>
+   </property>
+  </action>
+  <action name="actionConvert_to_PDF">
+   <property name="text">
+    <string>Convert to PDF</string>
+   </property>
+   <property name="statusTip">
+    <string>Converts text to PDF</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+P</string>
    </property>
   </action>
  </widget>
