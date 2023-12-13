@@ -22,7 +22,7 @@ class Ui_HomeWindow(object):
         self.centralwidget = QtWidgets.QWidget(HomeWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.label_2 = QtWidgets.QLabel(self.centralwidget)
-        self.label_2.setGeometry(QtCore.QRect(20, 10, 101, 61))
+        self.label_2.setGeometry(QtCore.QRect(20, 40, 101, 61))
         font = QtGui.QFont()
         font.setPointSize(16)
         font.setItalic(True)
@@ -32,14 +32,13 @@ class Ui_HomeWindow(object):
         self.label_2.setScaledContents(True)
         self.label_2.setObjectName("label_2")
         self.label_4 = QtWidgets.QLabel(self.centralwidget)
-        self.label_4.setGeometry(QtCore.QRect(890, 60, 67, 17))
+        self.label_4.setGeometry(QtCore.QRect(880, 100, 67, 17))
         self.label_4.setStyleSheet("QLabel {\n"
-"\n"
-"color: rgb(255, 0, 0)\n"
+"    color: rgb(0, 170, 127);\n"
 "}")
         self.label_4.setObjectName("label_4")
         self.pushButton = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButton.setGeometry(QtCore.QRect(160, 200, 151, 211))
+        self.pushButton.setGeometry(QtCore.QRect(160, 220, 151, 211))
         font = QtGui.QFont()
         font.setPointSize(67)
         self.pushButton.setFont(font)
@@ -51,7 +50,7 @@ class Ui_HomeWindow(object):
 "")
         self.pushButton.setObjectName("pushButton")
         self.label_3 = QtWidgets.QLabel(self.centralwidget)
-        self.label_3.setGeometry(QtCore.QRect(20, 150, 201, 17))
+        self.label_3.setGeometry(QtCore.QRect(20, 180, 201, 17))
         font = QtGui.QFont()
         font.setFamily("Lato")
         font.setPointSize(14)
@@ -60,7 +59,7 @@ class Ui_HomeWindow(object):
         self.label_3.setFont(font)
         self.label_3.setObjectName("label_3")
         self.lineEdit = QtWidgets.QLineEdit(self.centralwidget)
-        self.lineEdit.setGeometry(QtCore.QRect(150, 20, 711, 41))
+        self.lineEdit.setGeometry(QtCore.QRect(150, 60, 711, 41))
         self.lineEdit.setStyleSheet("QLineEdit {\n"
 "border-radius: 20px;\n"
 "border: 1px solid black; \n"
@@ -69,13 +68,13 @@ class Ui_HomeWindow(object):
 "}")
         self.lineEdit.setObjectName("lineEdit")
         self.horizontalLayoutWidget = QtWidgets.QWidget(self.centralwidget)
-        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 470, 920, 351))
+        self.horizontalLayoutWidget.setGeometry(QtCore.QRect(20, 490, 920, 351))
         self.horizontalLayoutWidget.setObjectName("horizontalLayoutWidget")
         self.horizontalLayoutDocs = QtWidgets.QHBoxLayout(self.horizontalLayoutWidget)
         self.horizontalLayoutDocs.setContentsMargins(0, 0, 0, 0)
         self.horizontalLayoutDocs.setObjectName("horizontalLayoutDocs")
         self.label_6 = QtWidgets.QLabel(self.centralwidget)
-        self.label_6.setGeometry(QtCore.QRect(20, 440, 201, 17))
+        self.label_6.setGeometry(QtCore.QRect(20, 460, 201, 17))
         font = QtGui.QFont()
         font.setFamily("Lato")
         font.setPointSize(14)
@@ -84,13 +83,13 @@ class Ui_HomeWindow(object):
         self.label_6.setFont(font)
         self.label_6.setObjectName("label_6")
         self.label = QtWidgets.QLabel(self.centralwidget)
-        self.label.setGeometry(QtCore.QRect(890, 10, 54, 50))
+        self.label.setGeometry(QtCore.QRect(880, 50, 54, 50))
         self.label.setText("")
         self.label.setPixmap(QtGui.QPixmap("/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/../resources/images/user.png"))
         self.label.setScaledContents(True)
         self.label.setObjectName("label")
         self.frame = QtWidgets.QFrame(self.centralwidget)
-        self.frame.setGeometry(QtCore.QRect(20, 190, 430, 231))
+        self.frame.setGeometry(QtCore.QRect(20, 210, 430, 231))
         self.frame.setStyleSheet("QFrame {\n"
 "    border-radius: 15px;\n"
 "    background-color: rgb(189, 212, 238);\n"
@@ -99,7 +98,7 @@ class Ui_HomeWindow(object):
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
         self.label_7 = QtWidgets.QLabel(self.centralwidget)
-        self.label_7.setGeometry(QtCore.QRect(520, 150, 240, 17))
+        self.label_7.setGeometry(QtCore.QRect(520, 180, 240, 17))
         font = QtGui.QFont()
         font.setFamily("Lato")
         font.setPointSize(14)
@@ -108,7 +107,7 @@ class Ui_HomeWindow(object):
         self.label_7.setFont(font)
         self.label_7.setObjectName("label_7")
         self.frame_2 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_2.setGeometry(QtCore.QRect(510, 190, 430, 231))
+        self.frame_2.setGeometry(QtCore.QRect(510, 210, 430, 231))
         self.frame_2.setStyleSheet("QFrame {\n"
 "    border-radius: 15px;\n"
 "    background-color: rgb(189, 212, 238);\n"
@@ -141,7 +140,7 @@ class Ui_HomeWindow(object):
 "")
         self.pushButtonAccess.setObjectName("pushButtonAccess")
         self.frame_3 = QtWidgets.QFrame(self.centralwidget)
-        self.frame_3.setGeometry(QtCore.QRect(20, 470, 920, 350))
+        self.frame_3.setGeometry(QtCore.QRect(20, 490, 920, 350))
         self.frame_3.setStyleSheet("QFrame {\n"
 "    border-radius: 15px;\n"
 "    background-color: rgb(189, 212, 238);\n"
@@ -149,6 +148,40 @@ class Ui_HomeWindow(object):
         self.frame_3.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
+        self.pushButtonLogout = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonLogout.setGeometry(QtCore.QRect(890, 0, 40, 30))
+        self.pushButtonLogout.setStyleSheet("QPushButton {\n"
+"    background-color: rgb(255, 148, 177);\n"
+"    border-radius: 30px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    border-radius: 30px;\n"
+"    background-color: rgb(255, 85, 127);\n"
+"}")
+        self.pushButtonLogout.setText("")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/../resources/images/logout.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonLogout.setIcon(icon)
+        self.pushButtonLogout.setObjectName("pushButtonLogout")
+        self.pushButtonRefresh = QtWidgets.QPushButton(self.centralwidget)
+        self.pushButtonRefresh.setGeometry(QtCore.QRect(0, 0, 40, 30))
+        self.pushButtonRefresh.setStyleSheet("QPushButton {\n"
+"    \n"
+"    background-color: rgb(170, 255, 127);\n"
+"    border-radius: 30px;\n"
+"}\n"
+"\n"
+"QPushButton:hover {\n"
+"    border-radius: 30px;\n"
+"    \n"
+"    background-color: rgb(85, 255, 127);\n"
+"}")
+        self.pushButtonRefresh.setText("")
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/../resources/images/Refresh_icon.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.pushButtonRefresh.setIcon(icon1)
+        self.pushButtonRefresh.setObjectName("pushButtonRefresh")
         self.frame_3.raise_()
         self.frame.raise_()
         self.label_2.raise_()
@@ -161,23 +194,15 @@ class Ui_HomeWindow(object):
         self.label.raise_()
         self.label_7.raise_()
         self.frame_2.raise_()
+        self.pushButtonLogout.raise_()
+        self.pushButtonRefresh.raise_()
         HomeWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(HomeWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1147, 22))
-        self.menubar.setObjectName("menubar")
-        self.menuProfile = QtWidgets.QMenu(self.menubar)
-        self.menuProfile.setObjectName("menuProfile")
-        HomeWindow.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(HomeWindow)
         self.statusbar.setObjectName("statusbar")
         HomeWindow.setStatusBar(self.statusbar)
         self.actionLogout = QtWidgets.QAction(HomeWindow)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("/home/sudhi-sundar-dutta/Desktop/DOCS_CLONE/ui/../resources/images/logout.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.actionLogout.setIcon(icon)
         self.actionLogout.setObjectName("actionLogout")
-        self.menuProfile.addAction(self.actionLogout)
-        self.menubar.addAction(self.menuProfile.menuAction())
 
         self.retranslateUi(HomeWindow)
         QtCore.QMetaObject.connectSlotsByName(HomeWindow)
@@ -193,5 +218,4 @@ class Ui_HomeWindow(object):
         self.label_7.setText(_translate("HomeWindow", "Open Documents with Link"))
         self.lineEditAccess.setPlaceholderText(_translate("HomeWindow", "Enter the access link"))
         self.pushButtonAccess.setText(_translate("HomeWindow", "Open Doc"))
-        self.menuProfile.setTitle(_translate("HomeWindow", "Profile"))
         self.actionLogout.setText(_translate("HomeWindow", "Logout"))

@@ -24,7 +24,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>10</y>
+      <y>40</y>
       <width>101</width>
       <height>61</height>
      </rect>
@@ -48,16 +48,15 @@
    <widget class="QLabel" name="label_4">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>60</y>
+      <x>880</x>
+      <y>100</y>
       <width>67</width>
       <height>17</height>
      </rect>
     </property>
     <property name="styleSheet">
      <string notr="true">QLabel {
-
-color: rgb(255, 0, 0)
+	color: rgb(0, 170, 127);
 }</string>
     </property>
     <property name="text">
@@ -68,7 +67,7 @@ color: rgb(255, 0, 0)
     <property name="geometry">
      <rect>
       <x>160</x>
-      <y>200</y>
+      <y>220</y>
       <width>151</width>
       <height>211</height>
      </rect>
@@ -94,7 +93,7 @@ border-radius: 15px;
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>150</y>
+      <y>180</y>
       <width>201</width>
       <height>17</height>
      </rect>
@@ -115,7 +114,7 @@ border-radius: 15px;
     <property name="geometry">
      <rect>
       <x>150</x>
-      <y>20</y>
+      <y>60</y>
       <width>711</width>
       <height>41</height>
      </rect>
@@ -136,7 +135,7 @@ background-color: rgb(187, 210, 231);
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>470</y>
+      <y>490</y>
       <width>920</width>
       <height>351</height>
      </rect>
@@ -147,7 +146,7 @@ background-color: rgb(187, 210, 231);
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>440</y>
+      <y>460</y>
       <width>201</width>
       <height>17</height>
      </rect>
@@ -167,8 +166,8 @@ background-color: rgb(187, 210, 231);
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>890</x>
-      <y>10</y>
+      <x>880</x>
+      <y>50</y>
       <width>54</width>
       <height>50</height>
      </rect>
@@ -187,7 +186,7 @@ background-color: rgb(187, 210, 231);
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>190</y>
+      <y>210</y>
       <width>430</width>
       <height>231</height>
      </rect>
@@ -209,7 +208,7 @@ background-color: rgb(187, 210, 231);
     <property name="geometry">
      <rect>
       <x>520</x>
-      <y>150</y>
+      <y>180</y>
       <width>240</width>
       <height>17</height>
      </rect>
@@ -230,7 +229,7 @@ background-color: rgb(187, 210, 231);
     <property name="geometry">
      <rect>
       <x>510</x>
-      <y>190</y>
+      <y>210</y>
       <width>430</width>
       <height>231</height>
      </rect>
@@ -302,7 +301,7 @@ border-radius: 15px;
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>470</y>
+      <y>490</y>
       <width>920</width>
       <height>350</height>
      </rect>
@@ -320,6 +319,64 @@ border-radius: 15px;
      <enum>QFrame::Raised</enum>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonLogout">
+    <property name="geometry">
+     <rect>
+      <x>890</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	background-color: rgb(255, 148, 177);
+	border-radius: 30px;
+}
+
+QPushButton:hover {
+	border-radius: 30px;
+	background-color: rgb(255, 85, 127);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../resources/images/logout.png</normaloff>../resources/images/logout.png</iconset>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButtonRefresh">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>40</width>
+      <height>30</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	
+	background-color: rgb(170, 255, 127);
+	border-radius: 30px;
+}
+
+QPushButton:hover {
+	border-radius: 30px;
+	
+	background-color: rgb(85, 255, 127);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../resources/images/Refresh_icon.png</normaloff>../resources/images/Refresh_icon.png</iconset>
+    </property>
+   </widget>
    <zorder>frame_3</zorder>
    <zorder>frame</zorder>
    <zorder>label_2</zorder>
@@ -332,23 +389,8 @@ border-radius: 15px;
    <zorder>label</zorder>
    <zorder>label_7</zorder>
    <zorder>frame_2</zorder>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1147</width>
-     <height>22</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuProfile">
-    <property name="title">
-     <string>Profile</string>
-    </property>
-    <addaction name="actionLogout"/>
-   </widget>
-   <addaction name="menuProfile"/>
+   <zorder>pushButtonLogout</zorder>
+   <zorder>pushButtonRefresh</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionLogout">

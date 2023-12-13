@@ -5,3 +5,4 @@ env/
 *.pyo
 *.pyd
 credentials.py
+cloudinary_credentials.py

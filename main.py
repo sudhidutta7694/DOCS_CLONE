@@ -1,9 +1,13 @@
 import bcrypt
+import sys
+import os
 import smtplib
 from email.mime.text import MIMEText
 import uuid
 import socket
 import threading
+import cloudinary.uploader, requests
+from cloudinary_credentials import *
 from PyQt5.QtCore import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -11,6 +15,8 @@ from PyQt5.uic import loadUi
 import webbrowser
 from utils.supabase_client import supabase
 from credentials import *
+from PyQt5.QtPrintSupport import QPrinter
+import html_previewer_copy as html_previewer
 
 docId = None
 userId = None
@@ -98,19 +104,26 @@ class AuthenticationManager:
             return response
         except Exception as e:
             print(f"An error occurred during login: {e}")
-
+    def logout(self):
+        try:
+            response = supabase.auth.sign_out()
+            print("Logout successful!")
+            AuthenticationManager.show_popup("Logout Successful", "User logged out.")
+            return response
+        except Exception as e:
+            print(f"An error occurred during logout: {e}")
 
 class MyTextEdit(QTextEdit):
     def __init__(self, server_socket):
         super().__init__()
 
         self.server_socket = server_socket
-        self.textChanged.connect(self.send_data)
+        self.cursorPositionChanged.connect(self.send_data)
        
     def send_data(self):
-        text = self.toPlainText()
-        supabase.table('docs').update({'content': text}).eq('doc_id', docId).execute()
-        self.server_socket.sendall(text.encode())
+        html = self.toHtml()
+        supabase.table('docs').update({'content': html}).eq('doc_id', docId).execute()
+        self.server_socket.sendall(html.encode())
         
 class ShareDialog(QDialog):
     def __init__(self, doc_name):
@@ -191,6 +204,10 @@ class ShareDialog(QDialog):
         access_type = self.comboBox.currentText()
         if email and access_type:
             self.grant_access(email, access_type, self.doc_id)
+            if access_type=="Readable":
+                access_type = "read"
+            elif access_type=="Writable":
+                access_type = "write"
             access_link = MainWindow.generate_general_access_link(self,self.doc_id, access_type)
             self.send_email(email, self.doc_name, access_link)
     
@@ -244,7 +261,7 @@ class ShareDialog(QDialog):
             smtp_port = 587  # Update with the appropriate port
             smtp_username = google_username
             smtp_password = google_password
-
+            
             # Set up the message
             subject = f"Access to Document: {doc_name}"
             content = f"You have been granted access. Copy the link below to access the document:\n\n{access_link}"
@@ -268,7 +285,123 @@ class ShareDialog(QDialog):
         except Exception as e:
             print(f"An error occurred: {e}")
             AuthenticationManager.show_popup("Error", f"An error occurred: {e}")
+
+# from PyQt5.QtWidgets import QFontDialog, QColorDialog
+# from PyQt5.QtGui import QFont, QColor, QTextCharFormat
+
+class TextEditorFunctions:
+    def __init__(self, text_edit):
+        self.text_edit = text_edit
+        self.is_bold = False
+        self.is_italic = False
+        self.is_underline = False
+        self.font_name = "DefaultFont"  # Set your default font name
+        self.font_size = 12  # Set your default font size
+        self.font_color = QColor("black")  # Set your default font color
+
+    def make_text_bold(self):
+        self.is_bold = not self.is_bold
+        current_format = self.text_edit.currentCharFormat()
+        font = QFont()
+        font.setBold(self.is_bold)
+        current_format.setFont(font)
+        self.text_edit.mergeCurrentCharFormat(current_format)
         
+    def make_text_italic(self):
+        cursor = self.text_edit.textCursor()
+        char_format = cursor.charFormat()
+        char_format.setFontItalic(not char_format.fontItalic())
+        cursor.mergeCharFormat(char_format)
+        self.text_edit.setCurrentCharFormat(char_format)
+
+
+    def make_text_underline(self):
+        cursor = self.text_edit.textCursor()
+        char_format = cursor.charFormat()
+        char_format.setFontUnderline(not char_format.fontUnderline())
+        cursor.mergeCharFormat(char_format)
+        self.text_edit.setCurrentCharFormat(char_format)
+
+
+    from PyQt5.QtWidgets import QFontDialog
+
+    def show_font_dialog(self):
+        cursor = self.text_edit.textCursor()
+        char_format = cursor.charFormat()
+        
+        options = QFontDialog.DontUseNativeDialog
+        font, ok = QFontDialog.getFont(char_format.font(), options=options)
+        if ok:
+            char_format.setFont(font)
+            cursor.mergeCharFormat(char_format)
+            self.text_edit.setCurrentCharFormat(char_format)
+
+
+    def set_font_and_size(self, font, size):
+        cursor = self.text_edit.textCursor()
+        char_format = cursor.charFormat()
+        char_format.setFont(font)
+        char_format.setFontPointSize(size)
+        cursor.mergeCharFormat(char_format)
+        self.text_edit.setCurrentCharFormat(char_format)
+        
+    def show_color_dialog(self):
+        color_dialog = QColorDialog(self.text_edit)
+        color_dialog.setOption(QColorDialog.DontUseNativeDialog)  # Use this line to avoid native dialog issues
+        color_dialog.currentColorChanged.connect(self.set_text_color)
+        color_dialog.exec_()
+
+    def set_text_color(self, color):
+        cursor = self.text_edit.textCursor()
+        char_format = cursor.charFormat()
+        char_format.setForeground(color)
+        cursor.mergeCharFormat(char_format)
+        self.text_edit.setCurrentCharFormat(char_format)
+    
+class ImageHandler:
+    def __init__(self, main_window):
+        self.main_window = main_window
+        
+    def add_image(self):
+        try:
+            self.main_window.sync_timer.stop()
+            file_dialog = QFileDialog()
+            image_path, _ = file_dialog.getOpenFileName(self.main_window, 'Select Image', '', 'Images (*.png *.xpm *.jpg *.bmp)')
+
+            if image_path:
+                size_dialog = html_previewer.ImageSizeDialog(self.main_window)
+                width, height = size_dialog.get_image_size()
+
+                if width is not None and height is not None:
+                    image_name = image_path.split('/')[-1][:-4]
+                    upload_result = cloudinary.uploader.upload(image_path, public_id=image_name)
+
+                    if 'secure_url' in upload_result:
+                        hosted_url = upload_result['secure_url']
+                        print("Hosted image URL:", hosted_url)
+
+                        # Download the image to a local directory
+                        local_directory = '/home/sudhi-sundar-dutta/Desktop/Docify/images'
+                        local_path = os.path.join(local_directory, image_name)
+
+                        response = requests.get(hosted_url, stream=True)
+                        with open(local_path, 'wb') as file:
+                            for chunk in response.iter_content(chunk_size=128):
+                                file.write(chunk)
+
+                        # Insert the hosted image URL into the QTextEdit
+                        image_format = QTextImageFormat()
+                        image_format.setWidth(width)
+                        image_format.setHeight(height)
+                        image_format.setName(local_path)
+
+                        cursor = self.main_window.text_edit.textCursor()
+                        cursor.insertImage(image_format)
+                        # self.update_html()
+        except Exception as e:
+            AuthenticationManager.show_popup("Failed",f"Insertion of image failed due to {e}")    
+        finally:
+            self.main_window.sync_timer.start()   
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -287,12 +420,21 @@ class MainWindow(QMainWindow):
         self.stacked_widget.addWidget(self.signup_page)
         self.stacked_widget.addWidget(self.home_page)
         self.stacked_widget.addWidget(self.navbar)
+        
+        # self.html_generator = html_previewer.HtmlGenerator()
+        # self.setCentralWidget(self.html_generator)
+        # self.html_generator.update_html_signal.connect(self.update_database_html)
+
+        # # Call a function to initialize the text_edit with HTML from the database
+        # self.initialize_text_edit()
 
         # Set the central widget as the stacked widget
         self.setCentralWidget(self.stacked_widget)
 
         # Create an instance of the AuthenticationManager
         self.auth_manager = AuthenticationManager()
+        # self.file_dialog = QFileDialog()
+        self.image_handler = ImageHandler(self)
 
         # Connect the signal for switching to the signup page
         self.login_page.signUpLabel.mousePressEvent = self.switch_to_signup
@@ -307,11 +449,15 @@ class MainWindow(QMainWindow):
         self.login_page.pushButtonGoogle.clicked.connect(self.signinGoogle)
         self.home_page.pushButton.clicked.connect(self.create_doc)
         self.home_page.pushButtonAccess.clicked.connect(self.handle_access_link)
+        self.home_page.pushButtonLogout.clicked.connect(self.logout)
+        self.home_page.pushButtonRefresh.clicked.connect(self.update_ui)
         self.navbar.pushButtonBack.clicked.connect(self.switch_to_home)
         self.navbar.actionRestricted.triggered.connect(lambda: self.update_access('Restricted'))
         self.navbar.actionReadable.triggered.connect(lambda: self.update_access('Readable'))
         self.navbar.actionWritable_3.triggered.connect(lambda: self.update_access('Writable'))
+        self.navbar.actionConvert_to_PDF.triggered.connect(lambda: self.convert_to_pdf("/home/sudhi-sundar-dutta/Desktop/Docify/Documents/"))
         self.navbar.pushButtonShare.clicked.connect(lambda:self.open_share_dialog(docName))
+        self.navbar.actionImage.triggered.connect(self.add_image)
         
          # Establish a socket connection to the server
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -324,27 +470,50 @@ class MainWindow(QMainWindow):
 
         # Create an instance of MyTextEdit with the server socket
         self.text_edit = MyTextEdit(self.server_socket)  # Create an instance of MyTextEdit
+        self.text_editor_functions = TextEditorFunctions(self.text_edit)
         self.navbar.verticalLayout.addWidget(self.text_edit)
         
         # self.text_edit.textChanged.connect(self.text_edit.send_data)
+        self.navbar.pushButton.clicked.connect(self.text_editor_functions.make_text_bold)
+        self.navbar.pushButton_2.clicked.connect(self.text_editor_functions.make_text_italic)
+        self.navbar.pushButton_3.clicked.connect(self.text_editor_functions.make_text_underline)
+        self.navbar.pushButtonColour.clicked.connect(self.text_editor_functions.show_color_dialog)
+        self.navbar.pushButtonFont.clicked.connect(self.text_editor_functions.show_font_dialog)
 
         # Start a thread to continuously listen for changes in the textEdit
         print("Starting thread in self to listen for changes in the textEdit.....")
         threading.Thread(target=self.listen_for_changes).start()
-        
+    
+    def add_image(self):
+        # Pause the sync timer
+        self.sync_timer.stop()
+
+        # Call the add_image method from the ImageHandler instance
+        self.image_handler.add_image()
+
+        # Resume the sync timer
+        self.sync_timer.start()  
+
     def fetch_and_update_content(self):
+
         try:
+            # Disconnect the textChanged signal temporarily
+            self.text_edit.textChanged.disconnect(self.text_edit.send_data)
+            cursor_position = self.text_edit.textCursor().position()
             # self.update_ui()
             # self.update_text_edit()
             # Fetch the latest content based on the doc_id
             doc_query = supabase.table('docs').select('content', 'access').eq('doc_id', docId).execute()
+            user_uuids = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']  
             if doc_query and doc_query.data:
                 latest_content = doc_query.data[0]['content']
                 access_level = doc_query.data[0]['access']
-
+                
                 # Update the text_edit only if the content or access level has changed
-                if latest_content != self.text_edit.toPlainText():
-                    self.text_edit.setPlainText(latest_content)
+                if latest_content != self.text_edit.toHtml():
+                    cursor = self.text_edit.textCursor()
+                    cursor.setPosition(cursor_position)
+                    self.text_edit.setText(latest_content)
                     # print("Content updated.")
 
                 # Check if access level is updated
@@ -354,48 +523,12 @@ class MainWindow(QMainWindow):
                         self.navbar.pushButton_6.setIcon(icon)
                     elif access_level == "Readable":
                         icon = QIcon("resources/images/read.png")
-                        self.navbar.pushButton_6.setIcon(icon)      
+                        self.navbar.pushButton_6.setIcon(icon)
                     else:
                         icon = QIcon("resources/images/write.png")
-                        self.navbar.pushButton_6.setIcon(icon)
-                
-            # user_uuids = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']
-            # if (userId in user_uuids):
-            #     if userId == user_uuids[0]:
-            #         initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
-            #         print("\nInitial data: \n", initial_data)
-            #         self.text_edit.setPlainText(initial_data)
-            #     else:
-            #         user_access = supabase.table('docs').select('user_access').eq('doc_id', docId).execute().data[0]['user_access']
-            #         access_type = user_access[userId]    
-            #         if access_type == "Restricted":
-            #             self.switch_to_home()
-            #         if access_type == "Reader":
-            #             self.text_edit.setReadOnly(True)
-            #         if access_type == "Writer":
-            #             self.text_edit.setReadOnly(False)
-            #         self.navbar.menuBar().setEnabled(False)
-                
-            # else:
-            #     access_type = supabase.table('docs').select('access').eq('doc_id', docId).execute().data[0]['access']
-            #     if access_type == "Readable":
-            #         initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
-            #         print("\nInitial data: \n", initial_data)
-            #         self.text_edit.setPlainText(initial_data)
-            #         AuthenticationManager.show_popup("Read Only", "You have read access to this document.")
-            #         self.navbar.menuBar().setEnabled(False)
-            #         self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
-                   
-            #         self.text_edit.setReadOnly(True)
-            #     else:
-            #         initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
-            #         print("\nInitial data: \n", initial_data)
-            #         self.text_edit.setPlainText(initial_data)
-            #         self.navbar.menuBar().setEnabled(False)
-            #         self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
-            #         self.text_edit.setReadOnly(False)
-            #         AuthenticationManager.show_popup("Write Access", "You have write access to this document.")
-                        
+                        self.navbar.pushButton_6.setIcon(icon)    
+            # Reconnect the textChanged signal
+            self.text_edit.textChanged.connect(self.text_edit.send_data)        
         except Exception as e:
             print(f"An error occurred during fetch_and_update_content: {e}")
 
@@ -423,7 +556,7 @@ class MainWindow(QMainWindow):
                 if userId == user_uuids[0]:
                     initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
                     print("\nInitial data: \n", initial_data)
-                    self.text_edit.setPlainText(initial_data)
+                    self.text_edit.setText(initial_data)
                     self.text_edit.setReadOnly(False)
                     self.navbar.menuBar().setEnabled(True)
                 else:
@@ -431,6 +564,10 @@ class MainWindow(QMainWindow):
                     access_type = user_access[userId]    
                     if access_type == "Restricted":
                         AuthenticationManager.show_popup("Restricted Access", "You do not have access to this document.")
+                        if userId: user_uuids.remove(userId)
+                        supabase.table('docs').update({'users': user_uuids}).eq('doc_id', docId).execute()
+                        # dict(user_access).pop(userId)
+                        # supabase.table('docs').update({'user_access': user_access}).eq('doc_id', docId).execute()
                         self.switch_to_home()
                     elif access_type == "Reader":
                         self.text_edit.setReadOnly(True)
@@ -439,7 +576,9 @@ class MainWindow(QMainWindow):
                         self.text_edit.setReadOnly(False)
                         AuthenticationManager.show_popup("Write Access", "You have write access to this document.")
                         
-                    self.navbar.menuBar().setEnabled(False)
+                    # self.navbar.menuBar().setEnabled(False)
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
+                    
                 
             else:
                 access_type = supabase.table('docs').select('access').eq('doc_id', docId).execute().data[0]['access']
@@ -449,17 +588,17 @@ class MainWindow(QMainWindow):
                 if access_type == "Readable":
                     initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
                     print("\nInitial data: \n", initial_data)
-                    self.text_edit.setPlainText(initial_data)
-                    self.navbar.menuBar().setEnabled(False)
-                    # self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
+                    self.text_edit.setText(initial_data)
+                    # self.navbar.menuBar().setEnabled(False)
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
                     self.text_edit.setReadOnly(True)
                     AuthenticationManager.show_popup("Read Only", "You have read access to this document.")
                 else:
                     initial_data = supabase.table('docs').select('content').eq('doc_id', docId).execute().data[0]['content']
                     print("\nInitial data: \n", initial_data)
-                    self.text_edit.setPlainText(initial_data)
-                    self.navbar.menuBar().setEnabled(False)
-                    # self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
+                    self.text_edit.setText(initial_data)
+                    # self.navbar.menuBar().setEnabled(False)
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
                     self.text_edit.setReadOnly(False)
                     AuthenticationManager.show_popup("Write Access", "You have write access to this document.")
                     
@@ -609,8 +748,9 @@ class MainWindow(QMainWindow):
         global docId
         docId = supabase.table('docs').select('doc_id').eq('name', doc_name).execute().data[0]['doc_id']
         access_type = supabase.table('docs').select('access').eq('doc_id', docId).execute().data[0]['access']
-        # user_uuids = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']
-        if access_type == "Restricted":
+        user_access = supabase.table('docs').select('user_access').eq('doc_id', docId).execute().data[0]['user_access']
+        user_uuids = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']
+        if (userId!=user_uuids[0] and access_type == "Restricted") and (user_access[userId]=="Restricted"):
             AuthenticationManager.show_popup("Restricted Access", "You do not have access to this document.")
         else:
             self.switch_to_navbar(doc_name)
@@ -638,6 +778,7 @@ class MainWindow(QMainWindow):
         share_dialog = ShareDialog(doc_name)
         userIds = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']
         if userId != userIds[0]:
+            share_dialog.lineEdit.setPlaceholderText("You are not the owner")
             share_dialog.lineEdit.setEnabled(False)
             share_dialog.comboBox.setEnabled(False)
             share_dialog.pushButtonDone.setEnabled(False)
@@ -659,7 +800,9 @@ class MainWindow(QMainWindow):
             print(f"An error occurred during update_access: {e}")
             # Show a popup with the error message
             AuthenticationManager.show_popup("Error", f"An error occurred: {e}") 
-        
+    def refresh(self):
+        self.update_ui()
+        self.update_text_edit()  
     def listen_for_changes(self):
         try:
             while True:
@@ -670,10 +813,36 @@ class MainWindow(QMainWindow):
 
             # Update the textEdit in the navbar with the received data
             received_text = data.decode('utf-8')
-            self.text_edit.setPlainText(received_text)               
+            self.text_edit.setText(received_text)               
 
         except Exception as e:
             print(f"An error occurred during listen_for_changes: {e}")
+            
+    def convert_to_pdf(self, file_path):
+        try: 
+        # Get the text document from the text edit
+            text_content = self.text_edit.toHtml()
+
+            text_document = QTextDocument()
+            text_document.setHtml(text_content)
+
+            # Get the document name from Supabase
+            doc_name = supabase.table('docs').select('name').eq('doc_id', docId).execute().data[0]['name']
+
+            # Set up the PDF file name
+            pdf_file_path = f"{file_path}/{doc_name}.pdf"
+
+            # Set up the QPrinter
+            printer = QPrinter()
+            printer.setOutputFormat(QPrinter.PdfFormat)
+            printer.setOutputFileName(pdf_file_path)
+
+            # Use the QPrinter to generate the PDF
+            text_document.print_(printer)
+            AuthenticationManager.show_popup("PDF Saved",f"PDF saved successfully at: {file_path}")
+        except Exception as e:
+            AuthenticationManager.show_popup("Failed",f"Conversion to PDF failed due to {e}")
+
             
     def switch_to_signup(self, event):
         if event.button() == Qt.LeftButton:
@@ -704,6 +873,12 @@ class MainWindow(QMainWindow):
         if response:
             self.switch_to_home()
             
+    def logout(self):
+        response = self.auth_manager.logout()
+
+        if response:
+            self.stacked_widget.setCurrentIndex(0)
+            
     def signinGoogle(self):
         response = self.auth_manager.signinWithGoogle()
 
@@ -713,7 +888,7 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication([])
+    app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
     app.exec_()
