@@ -322,7 +322,7 @@ border-radius: 15px;
    <widget class="QPushButton" name="pushButtonLogout">
     <property name="geometry">
      <rect>
-      <x>890</x>
+      <x>900</x>
       <y>0</y>
       <width>40</width>
       <height>30</height>

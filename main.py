@@ -121,10 +121,27 @@ class MyTextEdit(QTextEdit):
         self.cursorPositionChanged.connect(self.send_data)
        
     def send_data(self):
-        html = self.toHtml()
-        supabase.table('docs').update({'content': html}).eq('doc_id', docId).execute()
+        try:
+            html = self.toHtml()
+
+            # Update Supabase table
+            supabase.table('docs').update({'content': html}).eq('doc_id', docId).execute()
+
+            # Check if the socket is not initialized or closed
+            if not self.server_socket or self.server_socket.fileno() == -1:
+                # Re-establish the socket connection
+                self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+                self.server_socket.connect(('127.0.0.1', 5555))
+
+            # Use invokeMethod to ensure the slot is executed in the main thread
+            QMetaObject.invokeMethod(self, "send_to_server", Qt.QueuedConnection, Q_ARG(str, html))
+        except Exception as e:
+            print(f"An error occurred during send_data: {e}")
+    @pyqtSlot(str)
+    def send_to_server(self, html):
+        # Send HTML data to the server socket
         self.server_socket.sendall(html.encode())
-        
+            
 class ShareDialog(QDialog):
     def __init__(self, doc_name):
         super(ShareDialog, self, ).__init__()
@@ -381,8 +398,14 @@ class ImageHandler:
                         print("Hosted image URL:", hosted_url)
 
                         # Download the image to a local directory
-                        local_directory = '/home/sudhi-sundar-dutta/Desktop/Docify/images'
-                        local_path = os.path.join(local_directory, image_name)
+                        desktop_path = os.path.join(os.path.expanduser("~"), "Desktop")
+
+                        # Create 'Docify/images' folder on the desktop
+                        images_folder = os.path.join(desktop_path, "Docify", "images")
+                        os.makedirs(images_folder, exist_ok=True)
+
+                        # Save the image to the 'Docify/images' folder
+                        local_path = os.path.join(images_folder, f"{image_name}.png")
 
                         response = requests.get(hosted_url, stream=True)
                         with open(local_path, 'wb') as file:
@@ -442,11 +465,10 @@ class MainWindow(QMainWindow):
         # self.home_page.pushButton.mousePressEvent = self.switch_to_navbar
         # self.home_page.pushButton.clicked.connect(lambda: self.switch_to_navbar(response))
 
-
         # Connect the signup function to the signup button
         self.signup_page.pushButtonEmail.clicked.connect(self.signup)
         self.login_page.pushButtonEmail.clicked.connect(self.login)
-        self.login_page.pushButtonGoogle.clicked.connect(self.signinGoogle)
+        # self.login_page.pushButtonGoogle.clicked.connect(self.signinGoogle)
         self.home_page.pushButton.clicked.connect(self.create_doc)
         self.home_page.pushButtonAccess.clicked.connect(self.handle_access_link)
         self.home_page.pushButtonLogout.clicked.connect(self.logout)
@@ -455,9 +477,11 @@ class MainWindow(QMainWindow):
         self.navbar.actionRestricted.triggered.connect(lambda: self.update_access('Restricted'))
         self.navbar.actionReadable.triggered.connect(lambda: self.update_access('Readable'))
         self.navbar.actionWritable_3.triggered.connect(lambda: self.update_access('Writable'))
-        self.navbar.actionConvert_to_PDF.triggered.connect(lambda: self.convert_to_pdf("/home/sudhi-sundar-dutta/Desktop/Docify/Documents/"))
+        self.navbar.actionConvert_to_PDF.triggered.connect(self.convert_to_pdf)
         self.navbar.pushButtonShare.clicked.connect(lambda:self.open_share_dialog(docName))
         self.navbar.actionImage.triggered.connect(self.add_image)
+        self.navbar.actionLink.triggered.connect(self.insert_link)
+        self.navbar.pushButtonLink.clicked.connect(self.fetch_clickable_links)
         
          # Establish a socket connection to the server
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -479,6 +503,7 @@ class MainWindow(QMainWindow):
         self.navbar.pushButton_3.clicked.connect(self.text_editor_functions.make_text_underline)
         self.navbar.pushButtonColour.clicked.connect(self.text_editor_functions.show_color_dialog)
         self.navbar.pushButtonFont.clicked.connect(self.text_editor_functions.show_font_dialog)
+        self.text_edit.textChanged.connect(self.text_edit_changed)
 
         # Start a thread to continuously listen for changes in the textEdit
         print("Starting thread in self to listen for changes in the textEdit.....")
@@ -493,6 +518,107 @@ class MainWindow(QMainWindow):
 
         # Resume the sync timer
         self.sync_timer.start()  
+        
+    def insert_link(self):
+        # Create a pop-up dialog
+        dialog = QDialog(self)
+        dialog.setWindowTitle("Insert Link")
+
+        # Create QLabel and QLineEdit for original text and link
+        label_original = QLabel("Original Text:")
+        original_text_input = QLineEdit()
+
+        label_link = QLabel("Link:")
+        link_input = QLineEdit()
+
+        # Create OK button
+        ok_button = QPushButton("OK")
+        ok_button.clicked.connect(lambda: self.update_link(original_text_input.text(), link_input.text(), dialog))
+
+        # Create layout and add widgets
+        layout = QVBoxLayout()
+        layout.addWidget(label_original)
+        layout.addWidget(original_text_input)
+        layout.addWidget(label_link)
+        layout.addWidget(link_input)
+        layout.addWidget(ok_button)
+
+        dialog.setLayout(layout)
+
+        # Show the dialog
+        dialog.exec_()
+    def update_link(self, original_text, link, dialog):
+        try:
+            cursor = self.text_edit.textCursor()
+            cursor_position = cursor.position()
+
+            # Insert the link in the QTextEdit at the cursor position
+            cursor.insertHtml(f'<a href="{link}">{original_text}</a>')
+
+            # Move the cursor to the end of the inserted link
+            new_cursor_position = cursor_position + len(f'<a href="{link}">{original_text}</a>')
+            cursor.setPosition(new_cursor_position)
+            self.text_edit.setTextCursor(cursor)
+
+            # Fetch the current links from the database
+            links_data = supabase.table('docs').select('links').eq('doc_id', docId).execute().data
+            current_links = links_data[0]['links'] if links_data else {}
+
+            # Update the link for the original text
+            current_links[original_text] = link
+
+            # Update the links column in the database
+            supabase.table('docs').update({'links': current_links}).eq('doc_id', docId).execute()
+
+            # Close the dialog
+            dialog.accept()
+        except Exception as e:
+            print(f"An error occurred during update_link: {e}")
+
+    def fetch_clickable_links(self):
+        try:
+            # Fetch the clickable links from the database
+            links_data = supabase.table('docs').select('links').eq('doc_id', docId).execute().data
+            clickable_links = links_data[0]['links'] if links_data else {}
+
+            # Display the links in a QTextBrowser
+            links_browser = QTextBrowser()
+            for original_text, link in clickable_links.items():
+                links_browser.append(f'<a href="{link}">{original_text}</a>')
+                
+            links_browser.anchorClicked.connect(self.handle_link_click)
+
+            # Create a pop-up dialog to display the links
+            dialog = QDialog(self)
+            dialog.setWindowTitle("Your Links")
+            layout = QVBoxLayout()
+            layout.addWidget(links_browser)
+            dialog.setLayout(layout)
+
+            # Show the dialog
+            dialog.exec_()
+        except Exception as e:
+            print(f"An error occurred during fetch_clickable_links: {e}")
+            
+    def handle_link_click(self, link):
+    # Open the clicked link in the default web browser
+        QDesktopServices.openUrl(QUrl(link.url()))
+
+    def text_edit_changed(self):
+        try:
+            # Fetch the current links from the database
+            links_data = supabase.table('docs').select('links').eq('doc_id', docId).execute().data
+            current_links = links_data[0]['links'] if links_data else {}
+
+            # Check if any original text in the QTextEdit has been removed
+            for original_text in list(current_links.keys()):
+                if original_text not in self.text_edit.toPlainText():
+                    del current_links[original_text]
+
+            # Update the links column in the database
+            supabase.table('docs').update({'links': current_links}).eq('doc_id', docId).execute()
+        except Exception as e:
+            print(f"An error occurred during text_edit_changed: {e}")
 
     def fetch_and_update_content(self):
 
@@ -526,7 +652,45 @@ class MainWindow(QMainWindow):
                         self.navbar.pushButton_6.setIcon(icon)
                     else:
                         icon = QIcon("resources/images/write.png")
-                        self.navbar.pushButton_6.setIcon(icon)    
+                        self.navbar.pushButton_6.setIcon(icon)
+                        
+                user_uuids = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']
+                
+            user_uuids = supabase.table('docs').select('users').eq('doc_id', docId).execute().data[0]['users']
+            
+            if (userId in user_uuids):
+                if userId == user_uuids[0]:
+                    self.text_edit.setReadOnly(False)
+                    self.navbar.menuBar().setEnabled(True)
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(True)
+                else:
+                    user_access = supabase.table('docs').select('user_access').eq('doc_id', docId).execute().data[0]['user_access']
+                    access_type = user_access[userId]    
+                    if access_type == "Restricted":
+                        if userId: user_uuids.remove(userId)
+                        supabase.table('docs').update({'users': user_uuids}).eq('doc_id', docId).execute()
+                        self.switch_to_home()
+                        self.switch_to_home()
+                    elif access_type == "Reader":
+                        self.text_edit.setReadOnly(True)
+                    elif access_type == "Writer":
+                        self.text_edit.setReadOnly(False)
+                        
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
+                    
+               
+            else:
+                access_type = supabase.table('docs').select('access').eq('doc_id', docId).execute().data[0]['access']
+                if access_type == "Restricted":
+                    self.switch_to_home()
+                if access_type == "Readable":
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
+                    self.text_edit.setReadOnly(True)
+                else:
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(False)
+                    self.text_edit.setReadOnly(False)
+                        
+                    
             # Reconnect the textChanged signal
             self.text_edit.textChanged.connect(self.text_edit.send_data)        
         except Exception as e:
@@ -559,6 +723,7 @@ class MainWindow(QMainWindow):
                     self.text_edit.setText(initial_data)
                     self.text_edit.setReadOnly(False)
                     self.navbar.menuBar().setEnabled(True)
+                    self.navbar.menuBar().findChild(QMenu, "menuAccess").setEnabled(True)
                 else:
                     user_access = supabase.table('docs').select('user_access').eq('doc_id', docId).execute().data[0]['user_access']
                     access_type = user_access[userId]    
@@ -650,6 +815,8 @@ class MainWindow(QMainWindow):
             
             if doc_id:
                 self.open_doc(doc_name)
+            else: 
+                AuthenticationManager.show_popup("Invalid URL", "The URL you entered is invalid")
             # access_type = path_segments[3] if len(path_segments) > 3 else None
 
             # if doc_id and access_type:
@@ -660,6 +827,7 @@ class MainWindow(QMainWindow):
             #         self.open_document(doc_id, read_only=False)
 
         except Exception as e:
+            AuthenticationManager.show_popup("Invalid URL", "The document you are trying to access does not exist.")
             print(f"An error occurred during handle_access_link: {e}")
         
     def switch_to_home(self):
@@ -818,9 +986,9 @@ class MainWindow(QMainWindow):
         except Exception as e:
             print(f"An error occurred during listen_for_changes: {e}")
             
-    def convert_to_pdf(self, file_path):
+    def convert_to_pdf(self):
         try: 
-        # Get the text document from the text edit
+            # Get the text document from the text edit
             text_content = self.text_edit.toHtml()
 
             text_document = QTextDocument()
@@ -829,8 +997,12 @@ class MainWindow(QMainWindow):
             # Get the document name from Supabase
             doc_name = supabase.table('docs').select('name').eq('doc_id', docId).execute().data[0]['name']
 
+            # Determine the 'Documents' folder in 'Docify'
+            documents_folder = os.path.join(os.path.expanduser("~"), "Desktop", "Docify", "Documents")
+            os.makedirs(documents_folder, exist_ok=True)
+
             # Set up the PDF file name
-            pdf_file_path = f"{file_path}/{doc_name}.pdf"
+            pdf_file_path = os.path.join(documents_folder, f"{doc_name}.pdf")
 
             # Set up the QPrinter
             printer = QPrinter()
@@ -839,9 +1011,9 @@ class MainWindow(QMainWindow):
 
             # Use the QPrinter to generate the PDF
             text_document.print_(printer)
-            AuthenticationManager.show_popup("PDF Saved",f"PDF saved successfully at: {file_path}")
+            AuthenticationManager.show_popup("PDF Saved", f"PDF saved successfully at: {pdf_file_path}")
         except Exception as e:
-            AuthenticationManager.show_popup("Failed",f"Conversion to PDF failed due to {e}")
+            AuthenticationManager.show_popup("Failed", f"Conversion to PDF failed due to {e}")
 
             
     def switch_to_signup(self, event):
@@ -874,10 +1046,11 @@ class MainWindow(QMainWindow):
             self.switch_to_home()
             
     def logout(self):
-        response = self.auth_manager.logout()
+        # response = self.auth_manager.logout()
 
-        if response:
-            self.stacked_widget.setCurrentIndex(0)
+        # if response:
+        self.switch_to_login()
+        self.stacked_widget.setCurrentIndex(0)
             
     def signinGoogle(self):
         response = self.auth_manager.signinWithGoogle()

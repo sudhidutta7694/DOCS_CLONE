@@ -10,36 +10,13 @@
     <height>892</height>
    </rect>
   </property>
+  <property name="cursor">
+   <cursorShape>PointingHandCursor</cursorShape>
+  </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QPushButton" name="pushButtonRedo">
-    <property name="geometry">
-     <rect>
-      <x>350</x>
-      <y>0</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Redo</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="pushButtonUndo">
-    <property name="geometry">
-     <rect>
-      <x>300</x>
-      <y>0</y>
-      <width>51</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Undo</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
@@ -228,6 +205,29 @@
       <normaloff>../resources/images/share.png</normaloff>../resources/images/share.png</iconset>
     </property>
    </widget>
+   <widget class="QPushButton" name="pushButtonLink">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>0</y>
+      <width>100</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	color: rgb(0, 85, 255);
+	background-color: rgb(170, 255, 127);
+}</string>
+    </property>
+    <property name="text">
+     <string>Your Links</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>../resources/images/link.png</normaloff>../resources/images/link.png</iconset>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -260,7 +260,7 @@
      <string>Insert</string>
     </property>
     <addaction name="actionImage"/>
-    <addaction name="actionTable"/>
+    <addaction name="actionLink"/>
    </widget>
    <widget class="QMenu" name="menuFormat">
     <property name="title">
@@ -351,10 +351,16 @@
    <property name="text">
     <string>Image</string>
    </property>
+   <property name="shortcut">
+    <string>Ctrl+K</string>
+   </property>
   </action>
-  <action name="actionTable">
+  <action name="actionLink">
    <property name="text">
     <string>Link</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+L</string>
    </property>
   </action>
   <action name="actionChart">

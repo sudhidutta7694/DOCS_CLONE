@@ -149,7 +149,7 @@ class Ui_HomeWindow(object):
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame_3.setObjectName("frame_3")
         self.pushButtonLogout = QtWidgets.QPushButton(self.centralwidget)
-        self.pushButtonLogout.setGeometry(QtCore.QRect(890, 0, 40, 30))
+        self.pushButtonLogout.setGeometry(QtCore.QRect(900, 0, 40, 30))
         self.pushButtonLogout.setStyleSheet("QPushButton {\n"
 "    background-color: rgb(255, 148, 177);\n"
 "    border-radius: 30px;\n"

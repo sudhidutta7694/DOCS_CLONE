@@ -105,7 +105,6 @@ class HtmlGenerator(QMainWindow):
         self.timer.timeout.connect(self.update_html)
         self.timer.start(25)
         
-        
         self.actionTable.triggered.connect(self.add_link)
         self.actionImage.triggered.connect(self.add_image)
         self.pushButton.clicked.connect(self.toggle_bold)
@@ -113,6 +112,13 @@ class HtmlGenerator(QMainWindow):
         self.pushButton_3.clicked.connect(self.toggle_underline)
         # self.font_size_btn.clicked.connect(self.set_font_size)
         self.pushButtonColour.clicked.connect(self.set_font_color)
+        
+        self.link_display = QTextBrowser()
+        self.link_display.setOpenExternalLinks(True)  # Enable opening external links
+
+        layout = QVBoxLayout(self.centralWidget())
+        layout.addWidget(self.textEdit)
+        layout.addWidget(self.link_display)
 
     def add_image(self):
         file_dialog = QFileDialog()
@@ -158,6 +164,9 @@ class HtmlGenerator(QMainWindow):
             cursor = self.textEdit.textCursor()
             cursor.insertHtml(link_html)
             self.update_html()
+
+            # Add the link to the displayed clickable links
+            self.link_display.append(f'<a href="{link}">{name}</a>')
     def toggle_bold(self):
         self.toggle_format(QTextCharFormat.FontWeight)
 
